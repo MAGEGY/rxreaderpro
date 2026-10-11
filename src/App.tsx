@@ -3,8 +3,18 @@ import type { ChangeEvent } from 'react'
 import { matchMedicines, parseMedicineCsv } from './lib/medicineMatcher'
 import { processPrescriptionText } from './lib/textPostProcessor'
 import type { MatchedMedicine, Medicine, ProcessedPrescription } from './lib/types'
+import FloatingHelp from './components/FloatingHelp'
+import type { HelpHowTo } from './components/FloatingHelp'
 
 type Status = 'loading-db' | 'idle' | 'camera' | 'ocr' | 'done' | 'error'
+
+const HELP_HOWTOS: HelpHowTo[] = [
+  { title: 'Scan a prescription', body: 'Tap "Start camera", point at the prescription and tap "Capture & process" — or upload a photo. The first scan downloads the OCR model (10-15 MB), afterwards it is instant.' },
+  { title: 'What gets extracted', body: 'The app looks for structured fields: patient name, date of birth, patient ID, doctor name, license number, and the prescription date. Each medication line is parsed into name, strength (e.g. 500mg), frequency (e.g. twice daily), duration, and instructions.' },
+  { title: 'How medicine matching works', body: 'The text is matched against 7,700 medicines using six steps: exact name, generic name, brand names, medical context (pain, infection, diabetes...), fuzzy spelling (Levenshtein), word-level partial matches, and dosage. Confidence bars show how sure each match is — green is high, amber medium, red low.' },
+  { title: 'Print the report', body: 'Tap "Print report" for a clean printout with the prescription details, medication table and matched medicines — useful to take to the pharmacy.' },
+  { title: 'Check the raw text', body: 'If a result looks wrong, expand "Raw OCR text" at the bottom to see exactly what the OCR read — you can then judge whether the photo needs to be retaken.' },
+]
 
 export default function App() {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -213,6 +223,17 @@ export default function App() {
       )}
 
       <footer className="footer">Not a medical device. Always verify with a healthcare professional.</footer>
+      <FloatingHelp
+        color="#0d9488"
+        functions={[
+          { label: 'Scan a prescription', description: 'Start the camera or upload a prescription photo', action: () => { setStatus('idle'); window.scrollTo({ top: 0, behavior: 'smooth' }) } },
+          { label: 'Prescription details', description: 'Patient, doctor, date and parsed medications with strengths', action: () => document.querySelector('.card')?.scrollIntoView({ behavior: 'smooth' }) },
+          { label: 'Matched medicines', description: 'Top 5 database matches with confidence bars', action: () => document.querySelectorAll('.card')[1]?.scrollIntoView({ behavior: 'smooth' }) },
+          { label: 'Print report', description: 'Printable prescription report for the pharmacy', action: () => window.print() },
+          { label: 'Raw OCR text', description: 'See exactly what the OCR recognized', action: () => document.querySelector('details.card')?.scrollIntoView({ behavior: 'smooth' }) },
+        ]}
+        howtos={HELP_HOWTOS}
+      />
     </div>
   )
 }
