@@ -226,7 +226,7 @@ export default function App() {
       <FloatingHelp
         color="#0d9488"
         functions={[
-          { label: 'Scan a prescription', description: 'Start the camera or upload a prescription photo', action: () => { setStatus('idle'); window.scrollTo({ top: 0, behavior: 'smooth' }) } },
+          { label: 'Scan a prescription', description: 'Start the camera or upload a prescription photo', action: () => startCamera() },
           { label: 'Prescription details', description: 'Patient, doctor, date and parsed medications with strengths', action: () => document.querySelector('.card')?.scrollIntoView({ behavior: 'smooth' }) },
           { label: 'Matched medicines', description: 'Top 5 database matches with confidence bars', action: () => document.querySelectorAll('.card')[1]?.scrollIntoView({ behavior: 'smooth' }) },
           { label: 'Print report', description: 'Printable prescription report for the pharmacy', action: () => window.print() },
